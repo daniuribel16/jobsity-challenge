@@ -1,0 +1,24 @@
+{
+  "invoice": "S83834754",
+  "invoiceInfo": {
+    "invoiceCode": "33-0092kk00",
+    "date": "7/31/18",
+    "dueDate": "7/31/18",
+    "terms": "Net 0",
+    "billTo": "Mr Daniel Uribe",
+    "balance": 452.25
+  },
+  "overviewInfo": {
+    "status": "Active",
+    "method": "Multimodal",
+    "capacity": "LCL",
+    "drayage": "Pickup, Delivery",
+    "incoterms": "FOB",
+    "serviceOptions": "Deconsolidation, Customs Clearance",
+    "hazardousCommodities": "Lithium Batteries, Hazmat, Other"
+  },
+  "lacation": {
+    "lat": 59.95, 
+    "lng": 30.33
+  }
+}
