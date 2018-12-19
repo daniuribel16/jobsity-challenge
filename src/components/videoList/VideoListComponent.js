@@ -11,9 +11,13 @@ class VideoList extends Component {
     render() {
         const list = this.props.listVideos.map((val, i) => {
             return (
-            <li className="list-group-item d-flex justify-content-between align-items-center" key={i}>
+            <li className="list-group-item d-flex justify-content-between align-items-center m-2 video-list-item"
+                key={i}>
               {val.name}
-              <i class="fas fa-times"></i>
+              <i class="fa fa-edit fa-lg float-right"
+                onClick={() => this.deleteVideo(val.i)}></i>
+              <i class="fa fa-times fa-lg float-right"
+                onClick={() => this.deleteVideo(val.i)}></i>
             </li>)
       });
       return (<ul className="list-group">{list}</ul>)

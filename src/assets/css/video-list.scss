@@ -1,0 +1,84 @@
+$primary-color: #196f89;
+$secondary-color: #3A3A3A;
+$third-color: #c82333;
+
+html, body, #root {
+  height: 100%;
+  background-color: $secondary-color;
+  overflow-x: hidden;
+}
+
+.video-list-item {
+  // background-color: $primary-color;
+  font-size: large;
+  color: aliceblue;
+  font-weight: 500;
+}
+
+.list-section {
+  background-color: $primary-color;
+}
+
+.player-section {
+  text-align: center;
+}
+
+.video-player {
+  width: 90%;
+  background-color: transparent;
+  margin: 0 auto;
+  margin-top: 3%;
+  border-radius: 15px;
+}
+
+#root i {
+  cursor: pointer;
+}
+
+#root button {
+  cursor: pointer;
+}
+
+.btn-open-form {
+  position: absolute;
+  right: 1.5em;
+  bottom: 1.5em;
+  -webkit-box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 22px -1px rgba(0,0,0,0.75);
+  z-index: 100;
+}
+
+
+ 
+.modal-form-header{
+  background-color: $primary-color;
+  color: aliceblue;
+  font-weight: 500;
+}
+
+.video-url {
+  height: 1.6em;
+  width: 70%;
+  margin-top: 0.8em;
+  border-radius: 10px;
+  font-size: 40px;
+  padding: 20px;
+  color: #5d5d5d;
+  font-family: monospace;
+  font-style: italic;
+  background-color: #e9eef2;
+  
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px $third-color;
+  outline: 0 none;
+}
+
+.video-url:focus {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.075) inset, 0 0 20px $third-color;
+}
+
+@media (max-width: 550px) {
+  .video-player {
+    margin-top: 5%;
+  }
+}

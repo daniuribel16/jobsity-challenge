@@ -42,9 +42,11 @@ class VideoForm extends Component {
     render = () => {
         return (
             <div>
-                <Button color="danger" onClick={this.toggle}>New</Button>
+                <Button color="danger" className="btn-open-form btn-lg rounded-circle" onClick={this.toggle}>
+                    <i className="fa fa-plus"></i>
+                </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                    <ModalHeader className="modal-form-header" toggle={this.toggle}>Create video</ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup>
@@ -82,8 +84,8 @@ class VideoForm extends Component {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.addNewVideoToList}>Do Something</Button>{' '}
-                        <Button color="danger" onClick={this.toggle}>Cancel</Button>
+                        <Button className="btn btn-outline-primary" onClick={this.toggle}>Cancel</Button>
+                        <Button className="btn btn-outline-danger" onClick={this.addNewVideoToList}>Create</Button>
                     </ModalFooter>
                 </Modal>
             </div>

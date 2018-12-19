@@ -11,6 +11,7 @@ export const fetchVideoList = () => dispach => {
 
 export const saveVideoToList = newVideo => dispach => {
   const videoList = getVideoListFromStorage();
+  newVideo.id = new Date().getUTCMilliseconds();
   videoList.unshift(newVideo);
   localStorage.setItem('videoList', JSON.stringify(videoList));
   return dispach({
