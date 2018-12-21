@@ -1,5 +1,5 @@
 import '../../assets/css/video-list.scss';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import VideoPlayer from './VideoPlayerComponent';
 import VideoList from './VideoListComponent';
 import VideoForm from './VideoFormComponent';
@@ -9,16 +9,24 @@ export default class VideoPlayerList extends Component {
     
     render() {
         return (
-            <div className="row no-gutters  h-100">
-                <div className="col-md-8 col-lg-9 player-section">
-                    <VideoUrlVideo />
-                    <VideoPlayer />        
+            <Fragment>
+                <div className="row no-gutters">
+                    <div className="col-md-12 player-section">
+                        <VideoPlayer />        
+                    </div>
                 </div>
-                <div className="col-md-4 col-lg-3 list-section">
+                <div className="row">
+                    <div className="col-md-12 list-section">
+                        
+                        <VideoList />
+                    </div>
+                </div>
+                <div className="row footer-section">
                     <VideoForm />
-                    <VideoList />
+                    <VideoUrlVideo />
                 </div>
-            </div>
+                
+            </Fragment>
             )
     }
 }

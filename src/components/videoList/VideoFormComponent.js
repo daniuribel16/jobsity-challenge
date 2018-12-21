@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { saveVideoToList } from '../../actions/videoListActions';
+import { saveVideoToList, editVideoFromList } from '../../actions/videoListActions';
+import PropTypes from 'prop-types';
 import {
     Button, Modal, ModalHeader, ModalBody, ModalFooter,
-    Form, FormGroup, Label, Input, FormText
+    Form, FormGroup, Label, Input, FormText, Alert
 } from 'reactstrap';
 
 class VideoForm extends Component {
@@ -11,19 +12,39 @@ class VideoForm extends Component {
         super(props)
         this.state = {
             video: {
-                name: "",
-                start: 0,
-                end: 0
+                id: 0,
+                name: '',
+                start: '',
+                end: ''
             },
-            modal: false
+            modal: false,
+            isCreate: true,
+            errorMessage: '',
+            errorVisible: false
         };
         this.onInputChange = this.onInputChange.bind(this);
         this.addNewVideoToList = this.addNewVideoToList.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
+    componentWillReceiveProps = (nextProps) => {
+        if (Object.keys(nextProps.videoToEdit).length > 0) {
+            this.setState((prevState) => ({
+                ...prevState,
+                modal: true,
+                isCreate: false,
+                video: {
+                    id: +nextProps.videoToEdit.id,
+                    name: nextProps.videoToEdit.name,
+                    start: +nextProps.videoToEdit.start,
+                    end: +nextProps.videoToEdit.end
+                }
+            }));
+        }
+    }
+
     toggle() {
-        this.setState({ modal: !this.state.modal });
+        this.setState({ modal: !this.state.modal, isCreate: true, });
     }
 
     onInputChange = (e) => {
@@ -35,19 +56,85 @@ class VideoForm extends Component {
         });
     }
 
+    onKeyUp = (e) => {
+        if(e.keyCode === 13) {
+            this.addNewVideoToList();
+        }
+    }
+
+    validForm = () => {
+        let isValid = true;
+        for(let key in this.state.video) {
+            if (this.state.video[key].toString() === '') {
+                this.showAlert(`field ${key} is required.`)
+                isValid = false;
+                break;
+            }
+        }
+
+        if (isValid) {
+            if (+this.state.video.start >= +this.state.video.end) {
+                this.showAlert(`start time must greater than end time.`)
+                    isValid = false;
+            }
+        }
+
+        if (isValid) {
+            if (+this.state.video.start < +this.props.listVideos[0].start ||
+                +this.state.video.start > +this.props.listVideos[0].end ||
+                +this.state.video.end < +this.props.listVideos[0].start ||
+                +this.state.video.end > +this.props.listVideos[0].end) {
+                    this.showAlert(`start and end time must be within the range 
+                         ${this.props.listVideos[0].start} and ${this.props.listVideos[0].end}.`)
+                    isValid = false;
+            }
+        }
+
+        return isValid;
+    }
+    
+
+    showAlert = (message) => {
+        this.setState((prevState) => ({
+            ...prevState,
+            errorMessage: message,
+            errorVisible: true
+        }), () => { 
+            setTimeout(() => {
+                this.setState((prevState) => ({
+                    ...prevState,
+                    errorVisible: false
+                }))
+        }, 5000) });
+    }
+
     addNewVideoToList = () => {
-        this.props.saveVideoToList(this.state.video);
+        if (this.validForm()) {
+            this.state.isCreate ? 
+                this.props.saveVideoToList(this.state.video) :
+                this.props.editVideoFromList(this.state.video);
+            this.toggle();
+            this.setState((prevState) => ({
+                ...prevState,
+                video: {...this.state.video,
+                   id: 0, name: '', start: 0, end: 0
+                }
+            }));
+        }
     }
 
     render = () => {
         return (
-            <div>
-                <Button color="danger" className="btn-open-form btn-lg rounded-circle" onClick={this.toggle}>
-                    <i className="fa fa-plus"></i>
+            <div className="col-6">
+                
+                <Button className="btn-open-form btn-lg rounded" onClick={this.toggle}>
+                    <i className="fa fa-plus mr-1"></i>
+                    Create new video
                 </Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader className="modal-form-header" toggle={this.toggle}>Create video</ModalHeader>
-                    <ModalBody>
+                    <ModalHeader className="modal-form-header" toggle={this.toggle}>
+                        {this.state.isCreate ? 'Create' : 'Edit'} video</ModalHeader>
+                    <ModalBody className="p-4">
                         <Form>
                             <FormGroup>
                                 <Label for="name">Name</Label>
@@ -57,35 +144,44 @@ class VideoForm extends Component {
                                     name="name"
                                     placeholder="Name"
                                     onChange={this.onInputChange}
+                                    onKeyUp={this.onKeyUp}
+                                    value={this.state.video.name}
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <Label for="start">Start</Label>
+                                <Label for="start">Start time</Label>
                                 <Input
                                     type="number"
                                     id="start"
                                     name="start"
                                     placeholder="Start Time"
                                     onChange={this.onInputChange}
+                                    onKeyUp={this.onKeyUp}
+                                    value={this.state.video.start}
                                 />
                                 <FormText>Time in seconds where you want the new video starts.</FormText>
                             </FormGroup>
                             <FormGroup>
-                                <Label for="end">End</Label>
+                                <Label for="end">End time</Label>
                                 <Input
                                     type="number"
                                     id="end"
                                     name="end"
                                     placeholder="End Time"
                                     onChange={this.onInputChange}
+                                    onKeyUp={this.onKeyUp}
+                                    value={this.state.video.end}
                                 />
                                 <FormText>Time in seconds where you want the new video finishes.</FormText>
                             </FormGroup>
                         </Form>
+                        <Alert color="danger" isOpen={this.state.errorVisible} toggle={this.onDismiss}>
+                            {this.state.errorMessage}
+                        </Alert>
                     </ModalBody>
                     <ModalFooter>
-                        <Button className="btn btn-outline-primary" onClick={this.toggle}>Cancel</Button>
-                        <Button className="btn btn-outline-danger" onClick={this.addNewVideoToList}>Create</Button>
+                        <Button className="btn btn-outline-danger" onClick={this.addNewVideoToList}>
+                        {this.state.isCreate ? 'Create' : 'Edit'} video</Button>
                     </ModalFooter>
                 </Modal>
             </div>
@@ -94,8 +190,24 @@ class VideoForm extends Component {
 
 }
 
+VideoForm.propTypes = {
+    saveVideoToList: PropTypes.func.isRequired,
+    listVideos: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        start: PropTypes.string,
+        end: PropTypes.string,
+    }))
+}
+
 const mapDispachToProps = {
-    saveVideoToList
+    saveVideoToList,
+    editVideoFromList
 };
 
-export default connect(null, mapDispachToProps)(VideoForm);
+const mapStateToProps = state => ({
+    listVideos: state.videoList.listVideos,
+    videoToEdit: state.videoList.videoToEdit
+});
+
+
+export default connect(mapStateToProps, mapDispachToProps)(VideoForm);
