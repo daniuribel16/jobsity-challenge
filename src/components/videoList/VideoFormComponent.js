@@ -11,12 +11,8 @@ class VideoForm extends Component {
     constructor(props){
         super(props)
         this.state = {
-            video: {
-                id: 0,
-                name: '',
-                start: '',
-                end: ''
-            },
+            video: { id: 0, name: '', start: '', end: '', tags: [] },
+            actualTag: '',
             modal: false,
             isCreate: true,
             errorMessage: '',
@@ -25,6 +21,7 @@ class VideoForm extends Component {
         this.onInputChange = this.onInputChange.bind(this);
         this.addNewVideoToList = this.addNewVideoToList.bind(this);
         this.toggle = this.toggle.bind(this);
+        this.removeTag = this.removeTag.bind(this);
     }
 
     componentWillReceiveProps = (nextProps) => {
@@ -37,7 +34,8 @@ class VideoForm extends Component {
                     id: +nextProps.videoToEdit.id,
                     name: nextProps.videoToEdit.name,
                     start: +nextProps.videoToEdit.start,
-                    end: +nextProps.videoToEdit.end
+                    end: +nextProps.videoToEdit.end,
+                    tags: nextProps.videoToEdit.tags
                 }
             }));
         }
@@ -47,7 +45,7 @@ class VideoForm extends Component {
         this.setState({ modal: !this.state.modal, isCreate: true, });
     }
 
-    onInputChange = (e) => {
+    onInputChange = e => {
         this.setState({
             ...this.state,
             video: {...this.state.video,
@@ -56,16 +54,49 @@ class VideoForm extends Component {
         });
     }
 
+    onTagInputChange = e => {
+        this.setState({
+            ...this.state,
+            actualTag: e.target.value
+        });
+    }
+
+    addTagToVideo = () => {
+        if (this.state.actualTag) {
+            this.setState((prevState) => ({
+                ...prevState,
+                actualTag: '',
+                video: {...prevState.video, 
+                    tags: prevState.video.tags.concat([this.state.actualTag]) }
+            }));
+        }
+    }
+
+    removeTag = (e) => {
+        let newTagList = [].concat(this.state.video.tags);
+        newTagList.splice(e, 1);
+        this.setState((prevState) => ({
+            ...prevState,
+            video: {...prevState.video, tags: newTagList }
+        }));
+    }
+
     onKeyUp = (e) => {
         if(e.keyCode === 13) {
             this.addNewVideoToList();
         }
     }
 
+    onTagKeyUp = (e) => {
+        if(e.keyCode === 13) {
+            this.addTagToVideo();
+        }
+    }
+
     validForm = () => {
         let isValid = true;
         for(let key in this.state.video) {
-            if (this.state.video[key].toString() === '') {
+            if (this.state.video[key].toString() === '' && key !== 'tags') {
                 this.showAlert(`field ${key} is required.`)
                 isValid = false;
                 break;
@@ -117,7 +148,7 @@ class VideoForm extends Component {
             this.setState((prevState) => ({
                 ...prevState,
                 video: {...this.state.video,
-                   id: 0, name: '', start: 0, end: 0
+                   id: 0, name: '', start: 0, end: 0, tags: []
                 }
             }));
         }
@@ -125,7 +156,7 @@ class VideoForm extends Component {
 
     render = () => {
         return (
-            <div className="col-6">
+            <div className="col-md-4 mb-2">
                 
                 <Button className="btn-open-form btn-lg rounded" onClick={this.toggle}>
                     <i className="fa fa-plus mr-1"></i>
@@ -174,7 +205,33 @@ class VideoForm extends Component {
                                 />
                                 <FormText>Time in seconds where you want the new video finishes.</FormText>
                             </FormGroup>
+                            <FormGroup>
+                                <Label for="tag">Add tag</Label>
+                                <Input
+                                    type="text"
+                                    id="tag"
+                                    name="tag"
+                                    placeholder="tags"
+                                    onChange={this.onTagInputChange}
+                                    onKeyUp={this.onTagKeyUp}
+                                    value={this.state.actualTag}
+                                />
+                                <Button className="btn btn-outline-danger btn-add-tag" onClick={this.addTagToVideo}>
+                                    Add</Button>
+                            </FormGroup>
                         </Form>
+                        <div className="w-100">
+                            {
+                                this.state.video.tags.map((val, i) => (
+                                    <div className="tag-item" key={i}>
+                                        {val}
+                                        <span onClick={() => this.removeTag(i)}>
+                                            <i className="fa fa-times fa-1 ml-1 remove-tag"></i>
+                                        </span>               
+                                    </div>
+                                ))
+                            }
+                        </div>
                         <Alert color="danger" isOpen={this.state.errorVisible} toggle={this.onDismiss}>
                             {this.state.errorMessage}
                         </Alert>

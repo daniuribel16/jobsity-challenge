@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import VideoPlayer from './VideoPlayerComponent';
 import VideoList from './VideoListComponent';
 import VideoForm from './VideoFormComponent';
-import VideoUrlVideo from './VideoUrlVideoComponent';
+import VideoFilter from './VideoFilterComponent';
 
 export default class VideoPlayerList extends Component {
     
@@ -23,7 +23,7 @@ export default class VideoPlayerList extends Component {
                 </div>
                 <div className="row footer-section">
                     <VideoForm />
-                    <VideoUrlVideo />
+                    <VideoFilter />
                 </div>
                 
             </Fragment>

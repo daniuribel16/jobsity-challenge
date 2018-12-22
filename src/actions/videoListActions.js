@@ -58,6 +58,7 @@ export const editVideoFromList = video => dispach => {
       x.name = video.name;
       x.start = video.start;
       x.end = video.end;
+      x.tags = video.tags;
     }
     return x;
   });
@@ -67,6 +68,14 @@ export const editVideoFromList = video => dispach => {
     payLoad: newList
   });
 };
+
+
+export const filterVideosByTag = filteredList => dispach => {
+  return dispach({
+    type: videoListTypes.FILTER_VIDEOS_BY_TAG,
+    payLoad: filteredList
+  });
+}
 
 const getVideoListFromStorage = () => {
   const sVideoList = localStorage.getItem('videoList');

@@ -11,26 +11,53 @@ class VideoList extends Component {
     constructor(props){
         super(props);
         this.playVideo = this.playVideo.bind(this);
+        window.onresize = e => this.onResizeWindow();
     }
     
     componentWillReceiveProps = (nextProps) => {
-        if (nextProps.newVideo) {
-            this.props.listVideos.splice(1, 0, nextProps.newVideo);
+        if (Object.keys(nextProps.newVideo).length) {
+            if (!(this.props.listVideos.filter(x => x.id === nextProps.newVideo.id).length)){
+                this.props.listVideos.splice(1, 0, nextProps.newVideo);
+            }
         }
+        if (Object.keys(nextProps.currentVideo).length) {
+            this.changePlayButtonClass(true, nextProps.currentVideo.id)
+        }
+        this.setState((prevState) => ({
+            ...prevState,
+            actualList: nextProps.filteredList.length ? nextProps.filteredList : nextProps.listVideos
+        }))
         this.setChildrens();
     }
 
     componentWillMount() {
         this.props.fetchVideoList();
         this.setState({
-          children: [],
-          activeItemIndex: 0,
-          tooltipOpen: false,
-          videoToDelete: {},
-          openDeleteConfirmation: false,
-          activeVideo: 0
+            actualList: [],
+            children: [],
+            activeItemIndex: 0,
+            tooltipOpen: false,
+            videoToDelete: {},
+            openDeleteConfirmation: false,
+            activeVideo: 0,
+            numberOfCards: 6
         });
         this.setChildrens();
+    }
+
+    componentDidMount() {
+        this.onResizeWindow();
+    }
+
+    onResizeWindow = () => {
+        const w = window.innerWidth;
+        let cards = 6;
+        if (w > 1170 && w < 1390) { cards = 5; } 
+        else if (w > 960 && w <= 1170) { cards = 4; }
+        else if (w > 730 && w <= 960) { cards = 3; }
+        else if (w > 500 && w <= 730) { cards = 2; }
+        else if (w <= 500) { cards = 1; }
+        this.setState((prevState) => ({...prevState, numberOfCards: cards }));
     }
 
     setTimeFormat = (sTime) => {
@@ -53,10 +80,19 @@ class VideoList extends Component {
     changeActiveItem = (activeItemIndex) => this.setState({ activeItemIndex });
 
     playVideo = (video, e) => {
+        this.changePlayButtonClass(false, e);
+        this.props.playVideoFromList(video);
+    }
+
+    changePlayButtonClass = (byId, val) => {
         const items =  document.getElementsByClassName("active-video");
         if (items.length) { items[0].classList.remove("active-video") };
-        e.currentTarget.classList.add('active-video');
-        this.props.playVideoFromList(video);
+        if (byId) {
+            const elem = document.getElementById(val.toString());
+            if (elem) { elem.classList.add('active-video'); }
+        } else {
+            val.currentTarget.classList.add('active-video');
+        }
     }
 
     answerConfirmation = (answer) => {
@@ -80,8 +116,10 @@ class VideoList extends Component {
         this.props.openEditVideo(video);
     }
     
-    createChildren = () => (
-        this.props.listVideos.map((val, i) => (
+    createChildren = () => {
+        
+        return (
+            this.state.actualList.map((val, i) => (
             <div key={i} className="video-list-item text-center">
                 <strong id="itemName" className="itemName">{val.name}</strong>
                 
@@ -109,6 +147,7 @@ class VideoList extends Component {
                     ) : null }
 
                     <i className="fa fa-play-circle fa-5x btn-play"
+                        id={val.id}
                         onClick={(e) => this.playVideo(val, e)}></i>
 
                     {i !== 0 ? (
@@ -116,9 +155,20 @@ class VideoList extends Component {
                             onClick={() => this.openDeleteConfirmation(val)}></i>
                     ) : null }
                 </div>
+
+                <div className="w-100 mt-1 tags-container">
+                    {
+                        val.tags ? (
+                            val.tags.map((tag, i) => (
+                                <div className="tag-item" key={i}>
+                                    {tag}
+                                </div>
+                        ))) : null
+                    }
+                </div>
             </div>
         ))
-    );
+    )}
     
     render() {
         const {
@@ -130,7 +180,7 @@ class VideoList extends Component {
             <Fragment>
                 <ItemsCarousel
                     // Carousel configurations
-                    numberOfCards={6}
+                    numberOfCards={this.state.numberOfCards}
                     gutter={12}
                     showSlither={true}
                     firstAndLastGutter={true}
@@ -174,7 +224,9 @@ VideoList.propTypes = {
 
 const mapStateToProps = state => ({
     listVideos: state.videoList.listVideos,
+    filteredList: state.videoList.filteredList,
     newVideo: state.videoList.newVideo,
+    currentVideo: state.videoList.currentVideo
 });
   
 const mapDispachToProps = {

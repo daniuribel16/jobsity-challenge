@@ -5,31 +5,35 @@ let initialState = {
   originalVideo: {},
   newVideo: {},
   currentVideo: {},
-  videoToEdit: {}
+  videoToEdit: {},
+  filteredList: []
 };
-
 
 const videoListReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case videoListTypes.SET_VIDEO_LIST:
+      const newList = Object.keys(state.originalVideo).length !== 0 && state.originalVideo.constructor === Object ? 
+        [state.originalVideo].concat(action.payLoad) :
+        action.payLoad;
       return {
         ...state, 
-        listVideos: Object.keys(state.originalVideo).length !== 0 && state.originalVideo.constructor === Object ? 
-          [state.originalVideo].concat(action.payLoad) :
-          action.payLoad,
+        listVideos: newList,
+        filteredList: newList,
         videoToEdit: {}
       }
     case videoListTypes.SAVE_VIDEO:
       return {
         ...state,
-        newVideo: action.payLoad
+        newVideo: action.payLoad,
       }
     case videoListTypes.SET_ORIGINAL_VIDEO:
       return {
         ...state,
         listVideos: [action.payLoad].concat(state.listVideos),
-        originalVideo: action.payLoad
+        filteredList: [action.payLoad].concat(state.filteredList),
+        originalVideo: action.payLoad,
+        currentVideo: action.payLoad
       }
     case videoListTypes.PLAY_VIDEO_FROM_LIST:
       return {
@@ -40,6 +44,11 @@ const videoListReducer = (state = initialState, action) => {
       return {
         ...state,
         videoToEdit: action.payLoad
+      }
+    case videoListTypes.FILTER_VIDEOS_BY_TAG:
+      return {
+        ...state,
+        filteredList: action.payLoad
       }
     default:
       return state;
