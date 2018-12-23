@@ -16,13 +16,6 @@ class VideoList extends Component {
     }
     
     componentWillReceiveProps = (nextProps) => {
-        if (Object.keys(nextProps.newVideo).length) { 
-            const newVid = nextProps.newVideo;// set new created video to the actual list and the filtered list
-            if (!(this.props.listVideos.filter(x => x.id === nextProps.newVideo.id).length)){
-                this.props.listVideos.splice(1, 0, newVid);
-                this.props.filteredList.splice(1, 0, newVid);
-            }
-        }
         if (Object.keys(nextProps.currentVideo).length) {
             this.changePlayButtonClass(true, nextProps.currentVideo.id)
         }

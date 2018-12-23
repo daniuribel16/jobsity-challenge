@@ -25,7 +25,8 @@ const videoListReducer = (state = initialState, action) => {
     case videoListTypes.SAVE_VIDEO:
       return {
         ...state,
-        newVideo: action.payLoad,
+        listVideos: [state.originalVideo].concat(action.payLoad),
+        filteredList: [state.originalVideo].concat(action.payLoad)
       }
     case videoListTypes.SET_ORIGINAL_VIDEO:
       const setOriginal = (state.listVideos.filter(x => x.id === action.payLoad.id).length  === 0);

@@ -16,7 +16,7 @@ export const saveVideoToList = newVideo => dispach => {
   localStorage.setItem('videoList', JSON.stringify(videoList));
   return dispach({
     type: videoListTypes.SAVE_VIDEO,
-    payLoad: newVideo
+    payLoad: videoList
   });
 }
 
