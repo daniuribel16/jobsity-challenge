@@ -1,0 +1,57 @@
+$primary-color: #dc3545;
+$secondary-color: #ffffff;
+$third-color: #00697a;
+
+.btn-open-form {
+  border: 2px solid $secondary-color;
+  color:  $secondary-color;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+.btn-open-form:hover {
+  border: 2px solid $primary-color;
+  background-color: $primary-color;
+}
+
+.modal-form-header{
+  background-color: $primary-color;
+  color: aliceblue;
+  font-weight: 500;
+}
+
+.modal-form-header button span {
+  color: #ffffff;
+  font-size: xx-large;
+}
+
+.tag-item {
+  padding: 0.3em 0.8em;
+  background: $third-color;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 0.2em;
+  color: $secondary-color;
+  font-size: small;
+  font-weight: 500;
+}
+
+.btn-add-tag {
+  position: absolute;
+  top: 2em;
+  right: 0;
+}
+
+.remove-tag:hover {
+  background-color: darkslategray;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tags-container {
+  overflow-x: scroll;
+  padding-bottom: 0.3em;
+}

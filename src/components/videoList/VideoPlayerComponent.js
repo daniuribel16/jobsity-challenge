@@ -1,3 +1,4 @@
+import '../../assets/css/video-player.scss';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setOriginalVideoToList, playVideoFromList } from '../../actions/videoListActions';
@@ -75,7 +76,7 @@ class VideoPlayer extends Component {
             }
         };
         
-        this.actualVideo.onplay = e => this.showHideLoader(false);
+        this.actualVideo.onplaying = e => this.showHideLoader(false);
 
         this.actualVideo.onwaiting = e => this.showHideLoader(true);
     }

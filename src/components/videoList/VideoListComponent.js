@@ -1,3 +1,4 @@
+import '../../assets/css/video-list.scss';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import ConfirmationComponent from '../common/ConfirmationComponent';

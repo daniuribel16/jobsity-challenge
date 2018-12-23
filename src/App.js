@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import './App.scss';
 
 class App extends Component {
 
@@ -15,7 +16,7 @@ class App extends Component {
   componentWillMount = () => this.checkPath();
 
   checkPath = () => {
-    this.setState({ showWelcomePage: window.location.pathname === '/' });
+    this.setState({ showWelcomePage: window.location.hash === '#/' });
   }
 
   render() {

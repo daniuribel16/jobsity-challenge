@@ -1,3 +1,4 @@
+import '../../assets/css/video-form.scss';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { saveVideoToList, editVideoFromList } from '../../actions/videoListActions';

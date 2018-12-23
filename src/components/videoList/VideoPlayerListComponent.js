@@ -1,4 +1,4 @@
-import '../../assets/css/video-list.scss';
+import '../../assets/css/common.scss';
 import React, { Component, Fragment } from 'react';
 import VideoPlayer from './VideoPlayerComponent';
 import VideoList from './VideoListComponent';
@@ -8,7 +8,7 @@ import VideoFilter from './VideoFilterComponent';
 export default class VideoPlayerList extends Component {
     
     render() {
-        const view = window.location.pathname;
+        const view = window.location.hash.replace('#','');
         return (
             <Fragment>
                 <div className="row no-gutters">

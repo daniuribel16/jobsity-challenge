@@ -1,0 +1,63 @@
+$primary-color: #dc3545;
+$secondary-color: #ffffff;
+$third-color: #00697a;
+
+// general styles
+html, body, #root {
+  height: 100%;
+  background-color: $secondary-color;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0.4em;
+  height: 0.4em;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+#root i {
+  cursor: pointer;
+}
+
+#root button {
+  cursor: pointer;
+}
+
+// footer
+.footer-section {
+  background-color: $third-color;
+  padding: 1.2em 3.5em
+}
+
+.filter-icon {
+  position: absolute;
+  font-size: 2em;
+  color: grey;
+  top: 0.2em;
+  right: 25%;
+}
+
+.footer-input {
+  height: 0.6em;
+  width: 80%;
+  border-radius: 5px;
+  font-size: 17px;
+  padding: 26px;
+  float: left;
+  color: #5d5d5d;
+  outline: 0 none;
+  margin: 0 auto;
+  border: 0px;
+  border-bottom: 1.2px solid gray;
+}
