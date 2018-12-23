@@ -3,14 +3,11 @@ import 'font-awesome/scss/font-awesome.scss';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'popper.js/dist/popper.min';
 import 'react-transition-group/dist/react-transition-group';
-
-
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { Route, HashRouter } from 'react-router-dom';
 import App from './App';
 import VideoPlayerList from './components/videoList/VideoPlayerListComponent';
-
 import { Provider } from 'react-redux';
 import store from './store';
 

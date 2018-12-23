@@ -7,13 +7,13 @@ import VideoFilter from './VideoFilterComponent';
 
 export default class VideoPlayerList extends Component {
     
-    render() {
+    render() { // parent component joining all together
         const view = window.location.hash.replace('#','');
         return (
             <Fragment>
                 <div className="row no-gutters">
                     <div className="col-md-12 player-section">
-                        <VideoPlayer />        
+                        <VideoPlayer />      
                     </div>
                 </div>
                 <div className="row">
@@ -26,8 +26,7 @@ export default class VideoPlayerList extends Component {
                     <VideoForm view={view} />
                     <VideoFilter />
                 </div>
-                
             </Fragment>
-            )
+        )
     }
 }

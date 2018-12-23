@@ -9,7 +9,9 @@ import {
 } from 'reactstrap';
 
 class VideoForm extends Component {
-    constructor(props){
+
+    // initialization of state and binding functions
+    constructor(props) {
         super(props)
         this.state = {
             video: { id: 0, name: '', start: '', end: '', tags: [] },
@@ -25,7 +27,8 @@ class VideoForm extends Component {
         this.removeTag = this.removeTag.bind(this);
     }
 
-    componentWillReceiveProps = (nextProps) => {
+    // hook called when component will receive the props to it and set state needed
+    componentWillReceiveProps = (nextProps) => { 
         if (Object.keys(nextProps.videoToEdit).length > 0) {
             this.setState((prevState) => ({
                 ...prevState,
@@ -42,11 +45,11 @@ class VideoForm extends Component {
         }
     }
 
-    toggle() {
+    toggle() { // open or close create/edit modal form
         this.setState({ modal: !this.state.modal, isCreate: true, });
     }
 
-    onInputChange = e => {
+    onInputChange = e => { // set form inputs when change their text
         this.setState({
             ...this.state,
             video: {...this.state.video,
@@ -55,14 +58,14 @@ class VideoForm extends Component {
         });
     }
 
-    onTagInputChange = e => {
+    onTagInputChange = e => { // set tag input when change its text
         this.setState({
             ...this.state,
             actualTag: e.target.value
         });
     }
 
-    addTagToVideo = () => {
+    addTagToVideo = () => { // add a new tag to tags list on current video
         if (this.state.actualTag) {
             this.setState((prevState) => ({
                 ...prevState,
@@ -73,7 +76,7 @@ class VideoForm extends Component {
         }
     }
 
-    removeTag = (e) => {
+    removeTag = (e) => { // remove tag when x icon is clicked
         let newTagList = [].concat(this.state.video.tags);
         newTagList.splice(e, 1);
         this.setState((prevState) => ({
@@ -82,36 +85,37 @@ class VideoForm extends Component {
         }));
     }
 
-    onKeyUp = (e) => {
+    onKeyUp = (e) => { // detects enter key on form to create a new video
         if(e.keyCode === 13) {
             this.addNewVideoToList();
         }
     }
 
-    onTagKeyUp = (e) => {
+    onTagKeyUp = (e) => { // detects enter key on tags to add a new one
         if(e.keyCode === 13) {
             this.addTagToVideo();
         }
     }
 
+    // valid all the common requiriments in a crud form
     validForm = () => {
         let isValid = true;
-        for(let key in this.state.video) {
+        for(let key in this.state.video) { // valid required fields
             if (this.state.video[key].toString() === '' && key !== 'tags') {
-                this.showAlert(`field ${key} is required.`)
+                this.showAlert(`field ${key} is required.`);
                 isValid = false;
                 break;
             }
         }
 
-        if (isValid) {
+        if (isValid) { // valid end time greater than end time
             if (+this.state.video.start >= +this.state.video.end) {
-                this.showAlert(`start time must greater than end time.`)
-                    isValid = false;
+                this.showAlert(`start time must greater than end time.`);
+                isValid = false;
             }
         }
 
-        if (isValid) {
+        if (isValid) { // valid times are in original video range time
             if (+this.state.video.start < +this.props.listVideos[0].start ||
                 +this.state.video.start > +this.props.listVideos[0].end ||
                 +this.state.video.end < +this.props.listVideos[0].start ||
@@ -121,11 +125,10 @@ class VideoForm extends Component {
                     isValid = false;
             }
         }
-
         return isValid;
     }
     
-
+    // show alert if form is not valid
     showAlert = (message) => {
         this.setState((prevState) => ({
             ...prevState,
@@ -140,12 +143,14 @@ class VideoForm extends Component {
         }, 5000) });
     }
 
+    // function call when click on create video button witch create a new one with the given information
     addNewVideoToList = () => {
         if (this.validForm()) {
+            // if form is valid call save or update according to state
             this.state.isCreate ? 
                 this.props.saveVideoToList(this.state.video) :
                 this.props.editVideoFromList(this.state.video);
-            this.toggle();
+            this.toggle(); // clean form after action
             this.setState((prevState) => ({
                 ...prevState,
                 video: {...this.state.video,
@@ -158,11 +163,13 @@ class VideoForm extends Component {
     render = () => {
         return (
             <div className="col-md-4 mb-2">
+                {/* Render create button if it's admin view */}
                 { this.props.view === '/admin' ? (
                 <Button className="btn-open-form btn-lg rounded" onClick={this.toggle}>
                     <i className="fa fa-plus mr-1"></i>
                     Create new video
                 </Button>) : null }
+                {/* modal form with inputs needed to create new video */}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader className="modal-form-header" toggle={this.toggle}>
                         {this.state.isCreate ? 'Create' : 'Edit'} video</ModalHeader>
@@ -221,6 +228,7 @@ class VideoForm extends Component {
                                     Add</Button>
                             </FormGroup>
                         </Form>
+                        {/* tags list added by 'tag' input in order to filter video afterwards */}
                         <div className="w-100">
                             {
                                 this.state.video.tags.map((val, i) => (
@@ -247,16 +255,21 @@ class VideoForm extends Component {
     }
 
 }
+// Proptypes
+const videoStruct = PropTypes.shape({
+    name: PropTypes.string,
+    start: PropTypes.string,
+    end: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string)
+});
 
 VideoForm.propTypes = {
     saveVideoToList: PropTypes.func.isRequired,
-    listVideos: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string,
-        start: PropTypes.string,
-        end: PropTypes.string,
-    }))
+    editVideoFromList: PropTypes.func.isRequired,
+    listVideos: PropTypes.arrayOf(videoStruct),
+    videoToEdit: videoStruct
 }
-
+// Maps states and dispatches to props
 const mapDispachToProps = {
     saveVideoToList,
     editVideoFromList
@@ -266,6 +279,5 @@ const mapStateToProps = state => ({
     listVideos: state.videoList.listVideos,
     videoToEdit: state.videoList.videoToEdit
 });
-
-
+// export component connection with react - redux
 export default connect(mapStateToProps, mapDispachToProps)(VideoForm);

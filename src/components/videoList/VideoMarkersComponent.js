@@ -3,19 +3,21 @@ import PropTypes from 'prop-types';
 
 class VideoMarkers extends Component {
 
-    getTimePosition = video => {
+    getTimePosition = video => { // return a coordinate on scrren width where a marker will be placed
         return (window.innerWidth / this.props.originalVideo.end) * video.start;
     }
 
-    render = () => {
+    render = () => { //if it's the original video playing, then render the markers
         const markers = this.props.currentVideo.id === this.props.originalVideo.id ? 
             this.props.videoList.map((val, i) => {
-                return i !== 0 ? (
+                /* div representing the marker */
+                return i !== 0 ? ( 
                 <div className="marker tooltip"
                     style={{left: this.getTimePosition(val)}}
                     onClick={() => this.props.playVideoByMarket(val)}
-                >
-                    <span class="tooltiptext">{val.name}</span>
+                    key={i}
+                > {/*  tooltip showed when is hovered a marker*/}
+                    <span className="tooltiptext">{val.name}</span>
                 </div>) : null 
         }) : null;
         return (
@@ -25,9 +27,18 @@ class VideoMarkers extends Component {
         );
     }
 }
+//Proptypes
+const videoStruct = PropTypes.shape({
+    name: PropTypes.string,
+    start: PropTypes.string,
+    end: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string)
+});
 
 VideoMarkers.propTypes = {
-    videoList: PropTypes.array.isRequired
+    playVideoByMarket: PropTypes.func.isRequired,
+    videoList: PropTypes.array.isRequired,
+    originalVideo: videoStruct
 }
-
+// export component to be used outside
 export default VideoMarkers;

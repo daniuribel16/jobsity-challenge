@@ -10,14 +10,14 @@ import PropTypes from 'prop-types';
 class VideoList extends Component {
 
     constructor(props){
-        super(props);
+        super(props); // set initial bind and initial screen width
         this.playVideo = this.playVideo.bind(this);
         window.onresize = e => this.onResizeWindow();
     }
     
     componentWillReceiveProps = (nextProps) => {
-        if (Object.keys(nextProps.newVideo).length) {
-            const newVid = nextProps.newVideo;
+        if (Object.keys(nextProps.newVideo).length) { 
+            const newVid = nextProps.newVideo;// set new created video to the actual list and the filtered list
             if (!(this.props.listVideos.filter(x => x.id === nextProps.newVideo.id).length)){
                 this.props.listVideos.splice(1, 0, newVid);
                 this.props.filteredList.splice(1, 0, newVid);
@@ -26,14 +26,14 @@ class VideoList extends Component {
         if (Object.keys(nextProps.currentVideo).length) {
             this.changePlayButtonClass(true, nextProps.currentVideo.id)
         }
-        this.setState((prevState) => ({
+        this.setState((prevState) => ({ // set state with new list of videos
             ...prevState,
             actualList: nextProps.filteredList.length ? nextProps.filteredList : nextProps.listVideos
         }))
-        this.setChildrens();
+        this.setChildrens(); // then set the items based on list
     }
 
-    componentWillMount() {
+    componentWillMount() {// Set initial state and get the list of stored videos
         this.props.fetchVideoList();
         this.setState({
             actualList: [],
@@ -45,14 +45,14 @@ class VideoList extends Component {
             activeVideo: 0,
             numberOfCards: 6
         });
-        this.setChildrens();
+        this.setChildrens(); // then set list found
     }
 
     componentDidMount() {
-        this.onResizeWindow();
+        this.onResizeWindow();// call resize witth the actual screen width
     }
 
-    onResizeWindow = () => {
+    onResizeWindow = () => { // detects when rezise window in order to set the number of items per screen
         const w = window.innerWidth;
         let cards = 6;
         if (w > 1170 && w < 1390) { cards = 5; } 
@@ -63,7 +63,7 @@ class VideoList extends Component {
         this.setState((prevState) => ({...prevState, numberOfCards: cards }));
     }
 
-    setTimeFormat = (sTime) => {
+    setTimeFormat = (sTime) => { // take seconds and returns a string with mm:ss format
         let min, sec = '';
         if(sTime){
             min = (Math.floor(+sTime / 60)).toString();
@@ -74,20 +74,20 @@ class VideoList extends Component {
         return `${min}:${sec}`;
     }
 
-    setChildrens = () => { 
+    setChildrens = () => { // set state with list items after component was redered
         setTimeout(() => {
             this.setState((prevState) => ({...prevState, children: this.createChildren() }));
         }, 10);
     }
-
+    // change the state specifying witch was played
     changeActiveItem = (activeItemIndex) => this.setState({ activeItemIndex });
 
-    playVideo = (video, e) => {
+    playVideo = (video, e) => { // triggred when play button on list is clicked
         this.changePlayButtonClass(false, e);
-        this.props.playVideoFromList(video);
+        this.props.playVideoFromList(video); // go to reproduce selected video
     }
 
-    changePlayButtonClass = (byId, val) => {
+    changePlayButtonClass = (byId, val) => { // change play button styles of video playing
         const items =  document.getElementsByClassName("active-video");
         if (items.length) { items[0].classList.remove("active-video") };
         if (byId) {
@@ -98,8 +98,8 @@ class VideoList extends Component {
         }
     }
 
-    answerConfirmation = (answer) => {
-        if (answer){
+    answerConfirmation = (answer) => { // confirmate o reject video delete
+        if (answer){ // if it's true then delete it
             this.props.deleteVideoFromList(this.state.videoToDelete);
         } 
         this.setState((prevState) => ({
@@ -108,21 +108,19 @@ class VideoList extends Component {
             openDeleteConfirmation: false }));
     }
 
-    openDeleteConfirmation = (video) => {
+    openDeleteConfirmation = (video) => { //triggered when delete video is click
         this.setState((prevState) => ({...prevState,
             openDeleteConfirmation: true,
             videoToDelete: video
         }));
     }
 
-    openEditVideo = (video) => {
+    openEditVideo = (video) => { // triggered when edit video is click
         this.props.openEditVideo(video);
     }
     
-    createChildren = () => {
-        
-        return (
-            this.state.actualList.map((val, i) => (
+    createChildren = () => (
+            this.state.actualList.map((val, i) => ( // iterate video list to create list item
             <div key={i} className="video-list-item text-center">
                 <strong id="itemName" className="itemName">{val.name}</strong>
                 
@@ -142,7 +140,7 @@ class VideoList extends Component {
                         <span className="float-left">{this.setTimeFormat(val.end)}</span>
                     </div>
                 </div>
-
+                {/* action buttons */}
                 <div className="w-100 button-actions-container"> 
                     { i !== 0  && this.props.view === '/admin' ? (
                         <i className="fa fa-edit fa-2x edit-icons"
@@ -158,7 +156,7 @@ class VideoList extends Component {
                             onClick={() => this.openDeleteConfirmation(val)}></i>
                     ) : null }
                 </div>
-
+                {/* video tags */}
                 <div className="w-100 mt-1 tags-container">
                     {
                         val.tags ? (
@@ -171,16 +169,12 @@ class VideoList extends Component {
                 </div>
             </div>
         ))
-    )}
+    );
     
     render() {
-        const {
-          activeItemIndex,
-          children,
-        } = this.state;
-    
-        return (
-            <Fragment>
+        const { activeItemIndex, children } = this.state;
+        return ( // list of videos in a carousel way
+            <Fragment> 
                 <ItemsCarousel
                     // Carousel configurations
                     numberOfCards={this.state.numberOfCards}
@@ -200,7 +194,7 @@ class VideoList extends Component {
                 >
                     {children}
                 </ItemsCarousel>
-                <ConfirmationComponent 
+                <ConfirmationComponent // call confirmation component when delete is clicked
                     title='Alert'
                     message='¿Are you sure you want to delete this video from the list?'
                     answerConfirmation={this.answerConfirmation}
@@ -211,20 +205,27 @@ class VideoList extends Component {
     }
 }
 
+//PropTypes
+const videoStruct = PropTypes.shape({
+    name: PropTypes.string,
+    start: PropTypes.string,
+    end: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string)
+});
+
 VideoList.propTypes = {
     fetchVideoList: PropTypes.func.isRequired,
-    listVideos: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string,
-        start: PropTypes.string,
-        end: PropTypes.string,
-    })),
-    newVideo: PropTypes.shape({
-        name: PropTypes.string,
-        start: PropTypes.string,
-        end: PropTypes.string,
-    })
+    playVideoFromList: PropTypes.func.isRequired,
+    editVideoFromList: PropTypes.func.isRequired,
+    deleteVideoFromList: PropTypes.func.isRequired,
+    openEditVideo: PropTypes.func.isRequired,
+    listVideos: PropTypes.arrayOf(videoStruct),
+    filteredList: PropTypes.arrayOf(videoStruct),
+    newVideo: videoStruct,
+    currentVideo: videoStruct,
 }
 
+// Maps states and dispatches to props
 const mapStateToProps = state => ({
     listVideos: state.videoList.listVideos,
     filteredList: state.videoList.filteredList,
@@ -239,5 +240,5 @@ const mapDispachToProps = {
     deleteVideoFromList,
     openEditVideo
 };
-
+// export component connection with react - redux
 export default connect(mapStateToProps, mapDispachToProps)(VideoList);

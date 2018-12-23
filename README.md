@@ -1,14 +1,18 @@
 ## Description
 
-Jobsity
+Jobsity video challenge
 
 ## Run project
 
-In the project directory, you can use:
+Clone the project and in the directory run:
 
-"npm run build" => to build our files from development to prod way
-then "node server" to serve the app in a little express server
+***"npm install"*** in order to install dependencies
+
+***To run the app run:***
+
+***"npm start"*** to use the react development server
 
 Or
 
-"npm start" to use the react development server
+***"npm run build"*** => to build our files from development to prod way
+then ***"node server"*** to serve the app in a little express server
