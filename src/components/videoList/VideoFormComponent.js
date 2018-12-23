@@ -157,11 +157,11 @@ class VideoForm extends Component {
     render = () => {
         return (
             <div className="col-md-4 mb-2">
-                
+                { this.props.view === '/admin' ? (
                 <Button className="btn-open-form btn-lg rounded" onClick={this.toggle}>
                     <i className="fa fa-plus mr-1"></i>
                     Create new video
-                </Button>
+                </Button>) : null }
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader className="modal-form-header" toggle={this.toggle}>
                         {this.state.isCreate ? 'Create' : 'Edit'} video</ModalHeader>

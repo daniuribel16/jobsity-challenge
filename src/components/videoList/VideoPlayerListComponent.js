@@ -8,6 +8,7 @@ import VideoFilter from './VideoFilterComponent';
 export default class VideoPlayerList extends Component {
     
     render() {
+        const view = window.location.pathname;
         return (
             <Fragment>
                 <div className="row no-gutters">
@@ -18,11 +19,11 @@ export default class VideoPlayerList extends Component {
                 <div className="row">
                     <div className="col-md-12 list-section">
                         
-                        <VideoList />
+                        <VideoList view={view} />
                     </div>
                 </div>
                 <div className="row footer-section">
-                    <VideoForm />
+                    <VideoForm view={view} />
                     <VideoFilter />
                 </div>
                 

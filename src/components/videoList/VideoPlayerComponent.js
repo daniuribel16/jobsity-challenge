@@ -19,6 +19,7 @@ class VideoPlayer extends Component {
         videoSet: false,
         isTransition: false,
         showLoader: true,
+        showMarkers: false
     }
 
     componentDidMount = () => {
@@ -121,13 +122,20 @@ class VideoPlayer extends Component {
         this.props.playVideoFromList(nextVideo);
     }
 
+    toggleMarkers = show => {
+        setTimeout(() => {
+            this.setState(prevState => ({...prevState, showMarkers: show}))
+        }, (show ? 100 : 400));
+    }
+
     playVideoByMarket = video => {
         this.props.playVideoFromList(video);
     }
 
     render() {
         return (
-            <div>
+            <div onMouseEnter={() => this.toggleMarkers(true)}
+                onMouseLeave={() => this.toggleMarkers(false)}>
                 {
                     this.state.showLoader ? (
                         <div className="loading">
@@ -146,12 +154,13 @@ class VideoPlayer extends Component {
                     <source src={this.defaulUrl} type="video/mp4" />
                     Your browser does not support HTML5 video.
                     </video>
-                <VideoMarkers 
-                    videoList={this.props.listVideos}
-                    originalVideo={this.props.originalVideo}
-                    currentVideo={this.props.currentVideo}
-                    playVideoByMarket={this.playVideoByMarket}
-                />
+                { this.state.showMarkers ? (
+                    <VideoMarkers 
+                        videoList={this.props.listVideos}
+                        originalVideo={this.props.originalVideo}
+                        currentVideo={this.props.currentVideo}
+                        playVideoByMarket={this.playVideoByMarket}
+                    /> ): null }
             </div>
             );
     }

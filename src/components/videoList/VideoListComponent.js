@@ -16,8 +16,10 @@ class VideoList extends Component {
     
     componentWillReceiveProps = (nextProps) => {
         if (Object.keys(nextProps.newVideo).length) {
+            const newVid = nextProps.newVideo;
             if (!(this.props.listVideos.filter(x => x.id === nextProps.newVideo.id).length)){
-                this.props.listVideos.splice(1, 0, nextProps.newVideo);
+                this.props.listVideos.splice(1, 0, newVid);
+                this.props.filteredList.splice(1, 0, newVid);
             }
         }
         if (Object.keys(nextProps.currentVideo).length) {
@@ -141,7 +143,7 @@ class VideoList extends Component {
                 </div>
 
                 <div className="w-100 button-actions-container"> 
-                    {i !== 0 ? (
+                    { i !== 0  && this.props.view === '/admin' ? (
                         <i className="fa fa-edit fa-2x edit-icons"
                             onClick={() => this.openEditVideo(val)}></i>
                     ) : null }
@@ -150,7 +152,7 @@ class VideoList extends Component {
                         id={val.id}
                         onClick={(e) => this.playVideo(val, e)}></i>
 
-                    {i !== 0 ? (
+                    {i !== 0 && this.props.view === '/admin' ? (
                         <i className="fa fa-trash fa-2x delete-icons"
                             onClick={() => this.openDeleteConfirmation(val)}></i>
                     ) : null }
