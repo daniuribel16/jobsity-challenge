@@ -8,7 +8,7 @@ Clone the project and in the directory run:
 
 ***"npm install"*** in order to install dependencies
 
-***To run the app run:***
+***To try the app run:***
 
 ***"npm start"*** to use the react development server
 
